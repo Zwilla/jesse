@@ -34,6 +34,7 @@
 -define(SCHEMA,      <<"schema">>).
 -define(TESTS,       <<"tests">>).
 -define(VALID,       <<"valid">>).
+-define(EXCEPTION(C, R, Stacktrace), C:R -> Stacktrace = erlang:get_stacktrace(),).
 
 %%% API
 
@@ -90,10 +91,10 @@ test_schema(DefaultSchema, Opts0, Schema, SchemaTests) ->
                            false ->
                              {error, _} = Result
                          end
-                     catch C:E ->
+                     catch ?EXCEPTION(C,R,Stacktrace)
                          ct:pal( "Error: ~p:~p~n"
                                  "Stacktrace: ~p~n"
-                               , [C, E, erlang:get_stacktrace()]
+                               , [C, R, Stacktrace]
                                )
                      end
                  end
